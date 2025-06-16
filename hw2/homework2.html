@@ -1,0 +1,91 @@
+﻿<html>
+<meta charset="utf-8">
+  <head>
+    <!--<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>-->
+    <!--<script src="../aframe/aframe.min.js"></script>-->
+    <!--<script src="../aframe/aframe.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/aframe@1.6.0/dist/aframe-master.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+	<a-sky src="sky.png" color="#ac2fda"></a-sky>
+	<a-torus position="-2 1 -5" material="src: для круга.png; color: green" radius="1.2"
+          animation="property: rotation; to: 0 0 -360; loop: true; dur: 4000; easing: linear"></a-torus>
+	<a-plane width="7" height="7" rotation="-55 0 0" position="-2 -2 -5" material="src: площина.png" color="purple"></a-plane>
+	<a-cylinder color="yellow" height="2" radius="0.05" position="-2 -1 -5"
+          animation="property: components.material.material.color; type: color; from: yellow; to: green; dur: 10000; loop: true; dir: alternate"></a-cylinder>
+	<a-cylinder color="blue" height="2" radius="0.05" position="-3 -1 -5"
+          animation="property: components.material.material.color; type: color; from: blue; to: deeppink; dur: 10000; loop: true; dir: alternate"></a-cylinder>
+	<a-torus-knot material="src: карамель.png" color="orange" radius="1.2" position="-3 1 -5" animation="property:rotation; to: 0 0 360; loop:true; dur:10000"></a-torus-knot>
+	<a-plane width="9" height="2" position="3 1 -9"></a-plane>
+
+	<a-text value="Welcome to browser’s VR!" color="black" width="10" position="-0.5 1 -6" font="../fonts/My_Custom_Font-msdf.json" negate="false"></a-text>
+        <a-text value="Куца Аліна" color="violet" width="10" position="-0.5 1.5 -6" font="../fonts/TimesNewRoman-msdf.json" negate="false"
+          animation="property:position; to: -0.5 1.5 -40; loop:true; dur:20000">
+        </a-text>
+        <a-text value="Привіт" color="deeppink" width="10" position="3 1.5 -6" font="../fonts/arial-msdf.json" negate="false"
+          animation="property:rotation; to: 0 360 0; loop:true; dur:4000">
+        </a-text>
+
+        <a-entity obj-model="obj: url(Love.obj); mtl: url(obj.mtl)" 
+          position="0 0 -2" rotation="-90 0 0" scale="0.009 0.009 0.009"
+          animation="property: scale; delay: 7000; from: 0.009 0.009 0.009; to: 0.03 0.03 0.03; dir: alternate; loop: true; dur: 30000">
+        </a-entity>
+
+        <a-entity id="text-ring" position="0 1.5 -1"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 30000">
+
+          <a-text value="Я" position="1.2 0 0" rotation="0 -0 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value=" " position="1.19 0 0.16" rotation="0 -7 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="р" position="1.17 0 0.31" rotation="0 -15 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="а" position="1.13 0 0.46" rotation="0 -22 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="д" position="1.08 0 0.58" rotation="0 -30 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="а" position="1.01 0 0.76" rotation="0 -37 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value=" " position="0.93 0 0.9" rotation="0 -45 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="б" position="0.83 0 1.02" rotation="0 -52 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="а" position="0.72 0 1.14" rotation="0 -60 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="ч" position="0.61 0 1.24" rotation="0 -67 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="и" position="0.48 0 1.32" rotation="0 -75 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="т" position="0.34 0 1.4" rotation="0 -82 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="и" position="0.19 0 1.45" rotation="0 -90 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value=" " position="0.03 0 1.49" rotation="0 -97 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="в" position="-0.13 0 1.51" rotation="0 -105 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="а" position="-0.28 0 1.52" rotation="0 -112 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="с" position="-0.43 0 1.51" rotation="0 -120 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value=" " position="-0.57 0 1.47" rotation="0 -127 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="у" position="-0.7 0 1.43" rotation="0 -135 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value=" " position="-0.83 0 1.37" rotation="0 -142 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="м" position="-0.95 0 1.3" rotation="0 -150 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="о" position="-1.05 0 1.21" rotation="0 -157 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="ї" position="-1.14 0 1.12" rotation="0 -165 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="й" position="-1.22 0 1.01" rotation="0 -172 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value=" " position="-1.29 0 0.9" rotation="0 -180 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="в" position="-1.34 0 0.79" rotation="0 -187 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="і" position="-1.38 0 0.67" rotation="0 -195 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="р" position="-1.38 0 0.55" rotation="0 -202 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="т" position="-1.36 0 0.42" rotation="0 -210 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="у" position="-1.31 0 0.28" rotation="0 -217 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="а" position="-1.25 0 0.14" rotation="0 -225 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="л" position="-1.17 0 0" rotation="0 -232 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="ь" position="-1.08 0 -0.13" rotation="0 -240 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="н" position="-0.98 0 -0.25" rotation="0 -247 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="і" position="-0.87 0 -0.36" rotation="0 -255 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="й" position="-0.75 0 -0.46" rotation="0 -262 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value=" " position="-0.62 0 -0.55" rotation="0 -270 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="р" position="-0.49 0 -0.63" rotation="0 -277 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="е" position="-0.35 0 -0.7" rotation="0 -285 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="а" position="-0.22 0 -0.75" rotation="0 -292 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="л" position="-0.08 0 -0.8" rotation="0 -300 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="ь" position="0.06 0 -0.83" rotation="0 -307 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="н" position="0.2 0 -0.85" rotation="0 -315 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="о" position="0.34 0 -0.85" rotation="0 -322 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="с" position="0.47 0 -0.83" rotation="0 -330 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="т" position="0.6 0 -0.8" rotation="0 -337 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="і" position="0.72 0 -0.75" rotation="0 -345 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+          <a-text value="!" position="0.83 0 -0.7" rotation="0 -352 0" font="../fonts/arial-msdf.json" color="white" width="2" material="shader:msdf"></a-text>
+
+        </a-entity>
+
+    </a-scene>
+  </body>
+</html>
