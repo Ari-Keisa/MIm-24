@@ -1,0 +1,64 @@
+﻿<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body>
+    <a-scene 
+      vr-mode-ui="enabled: false;"
+      embedded
+      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
+
+      <!-- Вибраний маркер Hiro -->
+      <a-marker preset="hiro">
+
+        <a-entity rotation="-90 0 0" scale="0.15 0.15 0.15" position="0 0 0">
+          	<a-torus position="-2 1 -5" material="src: ../hw2/для круга.png; color: green" radius="1.2"
+          	  animation="property: rotation; to: 0 0 -360; loop: true; dur: 4000; easing: linear"></a-torus>
+          	<a-plane width="7" height="7" rotation="-55 0 0" position="-2 -2 -5" material="src: ../hw2/площина.png" color="purple"></a-plane>
+          	<a-cylinder color="yellow" height="2" radius="0.05" position="-2 -1 -5"
+          	  animation="property: components.material.material.color; type: color; from: yellow; to: green; dur: 10000; loop: true; dir: alternate"></a-cylinder>
+          	<a-cylinder color="blue" height="2" radius="0.05" position="-3 -1 -5"
+          	  animation="property: components.material.material.color; type: color; from: blue; to: deeppink; dur: 10000; loop: true; dir: alternate"></a-cylinder>
+          	<a-torus-knot material="src: ../hw2/карамель.png" color="orange" radius="1.2" position="-3 1 -5" animation="property:rotation; to: 0 0 360; loop:true; dur:10000"></a-torus-knot>
+          	<a-plane width="9" height="2" position="3 1 -9"></a-plane>
+
+          	<a-text value="Welcome to browser’s VR!" color="black" width="10" position="-0.5 1 -6" font="../fonts/My_Custom_Font-msdf.json" negate="false"></a-text>
+          	<a-text value="Куца Аліна" color="violet" width="10" position="-0.5 1.5 -6" font="../fonts/TimesNewRoman-msdf.json" negate="false"
+          	  animation="property:position; to: -0.5 1.5 -40; loop:true; dur:20000">
+          	</a-text>
+          	<a-text value="Привіт" color="deeppink" width="10" position="3 1.5 -6" font="../fonts/arial-msdf.json" negate="false"
+          	  animation="property:rotation; to: 0 360 0; loop:true; dur:4000">
+          	</a-text>
+
+          	<a-entity obj-model="obj: url(../hw2/Love.obj); mtl: url(../hw2/obj.mtl)" 
+          	  position="0 -3 -3" rotation="-90 0 0" scale="0.01 0.01 0.01"
+          	  animation="property: scale; delay: 7000; from: 0.01 0.01 0.01; to: 0.03 0.03 0.03; dir: alternate; loop: true; dur: 30000">
+          	</a-entity>
+        </a-entity>
+      </a-marker>
+
+      <!-- Маркер Kanji -->
+      <a-marker preset="kanji">
+          	<a-entity obj-model="obj: url(Пінгвін.obj); mtl: url(Пінгвін.mtl)" 
+          	  position="0 0 0" rotation="0 180 180" scale="0.01 0.01 0.01"
+          	  animation="property: scale; delay: 7000; from: 0.01 0.01 0.01; to: 0.03 0.03 0.03; dir: alternate; loop: true; dur: 30000">
+          	</a-entity>
+      </a-marker>
+
+      <!-- Власний маркер (з назвою Aris) -->
+      <a-marker type="pattern" url="pattern-Aris.patt">
+          	<a-entity obj-model="obj: url(Android.obj); mtl: url(Android.mtl)" 
+          	  position="0 0 0" rotation="0 180 180" scale="0.01 0.01 0.01"
+          	  animation="property: scale; delay: 7000; from: 0.01 0.01 0.01; to: 0.03 0.03 0.03; dir: alternate; loop: true; dur: 30000">
+          	</a-entity>
+      </a-marker>
+
+      <!-- Камера -->
+      <a-entity camera></a-entity>
+
+    </a-scene>
+  </body>
+</html>
