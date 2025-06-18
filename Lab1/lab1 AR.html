@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <meta charset="utf-8">
+      <title>Середньовічний замок з прапором для Mario</title>
+      <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+</head>
+<body>
+<body style="margin: 0; overflow: hidden;">
+       <a-scene embedded arjs>
+       <a-assets>
+              <img id="brick-texture" src="https://raw.githubusercontent.com/aframevr/sample-assets/refs/heads/master/assets/images/bricks/brick_roughness.jpg">
+       </a-assets>
+       <a-marker type="pattern" url="Castle.patt">
+       <a-entity scale="0.09 0.09 0.09 rotation="0 180 0">
+            <!-- Земля і пагорб -->
+            <a-cylinder position="0 0 0" radius="30" height="4" color="#6ad16a"></a-cylinder>
+            <a-box position="0 2 0" width="30" height="4" depth="25.5" color="#8b7d5a"></a-box>
+
+            <!-- Зовнішні стіни -->
+            <a-box position="0 7 -12" width="28" height="10" depth="2" material="src: #brick-texture; repeat: 14 5"></a-box>
+            <a-box position="0 7 12" width="28" height="10" depth="2" material="src: #brick-texture; repeat: 14 5"></a-box>
+            <a-box position="-14 7 0" width="2" height="10" depth="24" material="src: #brick-texture; repeat: 2 12"></a-box>
+            <a-box position="14 7 0" width="2" height="10" depth="24" material="src: #brick-texture; repeat: 2 12"></a-box>
+
+            <!-- Кутові круглі башти -->
+            <a-cylinder position="-14 10 -12" radius="3" height="16" material="src: #brick-texture; repeat: 6 8"></a-cylinder>
+            <a-cylinder position="14 10 -12" radius="3" height="16" material="src: #brick-texture; repeat: 6 8"></a-cylinder>
+            <a-cylinder position="-14 10 12" radius="3" height="16" material="src: #brick-texture; repeat: 6 8"></a-cylinder>
+            <a-cylinder position="14 10 12" radius="3" height="16" material="src: #brick-texture; repeat: 6 8"></a-cylinder>
+
+            <!-- Зубці на стінах (мерлони) -->
+            <a-box position="0 13 -13" width="2" height="2" depth="2" color="#dec183"></a-box>      <!-- Зад центр -->
+            <a-box position="6 13 -13" width="2" height="2" depth="2" color="#dec183"></a-box>      <!-- Зад право -->
+            <a-box position="-6 13 -13" width="2" height="2" depth="2" color="#dec183"></a-box>     <!-- Зад ліво -->
+            <a-box position="0 13 13" width="2" height="2" depth="2" color="#dec183"></a-box>       <!-- Перед центр -->
+            <a-box position="6 13 13" width="2" height="2" depth="2" color="#dec183"></a-box>       <!-- Перед право -->
+            <a-box position="-6 13 13" width="2" height="2" depth="2" color="#dec183"></a-box>      <!-- Перед ліво -->
+            <a-box position="-15 13 0" width="2" height="2" depth="2" color="#dec183"></a-box>      <!-- Середина ліво центр -->
+            <a-box position="-15 13 7" width="2" height="2" depth="2" color="#dec183"></a-box>      <!-- Середина ліво перед -->
+            <a-box position="-15 13 -7" width="2" height="2" depth="2" color="#dec183"></a-box>     <!-- Середина ліво зад -->
+            <a-box position="15 13 0" width="2" height="2" depth="2" color="#dec183"></a-box>       <!-- Середина право центр -->
+            <a-box position="15 13 7" width="2" height="2" depth="2" color="#dec183"></a-box>       <!-- Середина право перед -->
+            <a-box position="15 13 -7" width="2" height="2" depth="2" color="#dec183"></a-box>      <!-- Середина право зад -->
+
+            <!-- Конусоподібні дахи на баштах -->
+            <!-- Ліва передня башта -->
+            <a-cone position="-14 20 -12" radius-bottom="3.2" radius-top="0" height="4" color="#c1440e"></a-cone>
+            <!-- Права передня башта -->
+            <a-cone position="14 20 -12" radius-bottom="3.2" radius-top="0" height="4" color="#c1440e"></a-cone>
+            <!-- Ліва задня башта -->
+            <a-cone position="-14 20 12" radius-bottom="3.2" radius-top="0" height="4" color="#c1440e"></a-cone>
+            <!-- Права задня башта -->
+            <a-cone position="14 20 12" radius-bottom="3.2" radius-top="0" height="4" color="#c1440e"></a-cone>
+
+            <!-- Велика арка-ворота на передній стіні -->
+            <a-torus position="0 3 13.1" radius="7" tube="0.25" arc="360" rotation="0 0 0" color="#bfa77a"></a-torus>
+            <a-circle position="0 3 13.1" radius="7" arc="180" color="#c1440e"></a-circle>
+
+            <!-- Внутрішній двір -->
+            <a-plane position="0 2 0" rotation="-90 0 0" width="20" height="20" color="#bfa77a"></a-plane>
+
+            <!-- Внутрішні будівлі -->
+            <a-box position="0 4 0" width="8" height="6" depth="4" material="src: #brick-texture; repeat: 4 2"></a-box>
+            <a-box position="6 4 4" width="4" height="6" depth="4" material="src: #brick-texture; repeat: 2 2"></a-box>
+            <a-box position="-6 4 4" width="4" height="6" depth="4" material="src: #brick-texture; repeat: 2 2"></a-box>
+            <a-box position="6 4 -4" width="4" height="6" depth="4" material="src: #brick-texture; repeat: 2 2"></a-box>
+            <a-box position="-6 4 -4" width="4" height="6" depth="4" material="src: #brick-texture; repeat: 2 2"></a-box>
+
+            <!-- Головна вежа (донжон) -->
+            <a-cylinder position="0 13 0" radius="4" height="18" material="src: #brick-texture; repeat: 8 9"></a-cylinder>
+            <a-box position="0 22 0" width="8" height="2" depth="8" color="#f63b23"></a-box>
+            <!-- Зубці на донжоні -->
+            <a-box position="4 23 0" width="1" height="2" depth="1" color="#bfa77a"></a-box>
+            <a-box position="-4 23 0" width="1" height="2" depth="1" color="#bfa77a"></a-box>
+            <a-box position="0 23 4" width="1" height="2" depth="1" color="#bfa77a"></a-box>
+            <a-box position="0 23 -4" width="1" height="2" depth="1" color="#bfa77a"></a-box>
+            <a-box position="4 23 4" width="1" height="2" depth="1" color="#bfa77a"></a-box>
+            <a-box position="-4 23 4" width="1" height="2" depth="1" color="#bfa77a"></a-box>
+            <a-box position="4 23 -4" width="1" height="2" depth="1" color="#bfa77a"></a-box>
+            <a-box position="-4 23 -4" width="1" height="2" depth="1" color="#bfa77a"></a-box>
+
+            <!-- Флагшток і прапор (на донжоні) -->
+            <a-cylinder position="0 25.5 0" radius="0.15" height="15" color="#8B4513"></a-cylinder>
+            <a-entity id="flag-container" position="0 20 0">
+                  <a-entity id="flag-entity">
+                        <a-plane id="flag" position="2 0.2 0" width="4" height="1.5" color="#c1440e" rotation="0 0 0">
+                              <a-text value="Thank You Mario But Our Princess Is in Another Castle" position="0 0 0.01" color="white" align="center" width="3.2" wrap-count="32" scale="1.2 1.2 1.2"></a-text>
+                        </a-plane>
+                  </a-entity>
+            </a-entity>
+      </a-entity>
+      </a-marker>
+
+      <!-- AR.js камера -->
+      <a-entity camera></a-entity>
+      </a-scene>
+
+      <!-- Анімація прапора -->
+      <script>
+            document.querySelector('a-scene').addEventListener('loaded', function () {
+                  const flagContainer = document.getElementById('flag-container');
+                  const flagEntity = document.getElementById('flag-entity');
+                  let currentHeight = 28.5;
+                  const maxHeight = 31.5;
+                  const raiseSpeed = 0.05;
+                  const flagStartX = 2;
+                  const flagStartY = 0.2;
+                  const flagStartZ = 0;
+                  const raiseInterval = setInterval(() => {
+                        currentHeight += raiseSpeed;
+                        flagContainer.setAttribute('position', `0 ${currentHeight} 0`);
+                        if (currentHeight >= maxHeight) {
+                              clearInterval(raiseInterval);
+                              startWavingAnimation();
+                        }
+                  }, 30);
+
+                  function startWavingAnimation() {
+                        let time = 0;
+                        setInterval(() => {
+                              time += 0.03;
+                              const rotY = Math.sin(time) * 12 + 10;
+                              const rotX = Math.sin(time * 1.2) * 2;
+                              const rotZ = Math.sin(time * 0.7) * 4;
+                              flagEntity.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
+      
+                              const posY = flagStartY + Math.sin(time * 1.1) * 0.07;
+                              const posZ = flagStartZ + Math.cos(time * 0.5) * 0.09;
+                              flagEntity.children[0].setAttribute('position', `${posX} ${posY} ${posZ}`);
+                        }, 20);
+                  }
+            });
+      </script>
+     </body>
+</html>

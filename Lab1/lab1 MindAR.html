@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <a-scene
+        mindar-image="imageTargetSrc: Castle.mind; maxTrack: 2"
+        color-space="sRGB"
+        renderer="colorManagement: true, physicallyCorrectLights"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+    >
+        <a-assets>
+            <img id="brick-texture" src="https://raw.githubusercontent.com/aframevr/sample-assets/refs/heads/master/assets/images/bricks/brick_roughness.jpg">
+        </a-assets>
+        <a-entity mindar-image-target="targetIndex: 0" scale="0.001 0.001 0.001" rotation="0 180 0">
+            <!-- Земля і пагорб -->
+            <a-cylinder position="0 0 0" radius="0.3" height="0.04" color="#6ad16a"></a-cylinder>
+            <a-box position="0 0.02 0" width="0.3" height="0.04" depth="0.255" color="#8b7d5a"></a-box>
+
+            <!-- Зовнішні стіни -->
+            <a-box position="0 0.07 -0.12" width="0.28" height="0.1" depth="0.02" material="src: #brick-texture; repeat: 14 5"></a-box>
+            <a-box position="0 0.07 0.12" width="0.28" height="0.1" depth="0.02" material="src: #brick-texture; repeat: 14 5"></a-box>
+            <a-box position="-0.14 0.07 0" width="0.02" height="0.1" depth="0.24" material="src: #brick-texture; repeat: 2 12"></a-box>
+            <a-box position="0.14 0.07 0" width="0.02" height="0.1" depth="0.24" material="src: #brick-texture; repeat: 2 12"></a-box>
+
+            <!-- Кутові круглі башти -->
+            <a-cylinder position="-0.14 0.1 -0.12" radius="0.03" height="0.16" material="src: #brick-texture; repeat: 6 8"></a-cylinder>
+            <a-cylinder position="0.14 0.1 -0.12" radius="0.03" height="0.16" material="src: #brick-texture; repeat: 6 8"></a-cylinder>
+            <a-cylinder position="-0.14 0.1 0.12" radius="0.03" height="0.16" material="src: #brick-texture; repeat: 6 8"></a-cylinder>
+            <a-cylinder position="0.14 0.1 0.12" radius="0.03" height="0.16" material="src: #brick-texture; repeat: 6 8"></a-cylinder>
+
+            <!-- Зубці на стінах (мерлони) -->
+            <a-box position="0 0.13 -0.13" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="0.06 0.13 -0.13" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="-0.06 0.13 -0.13" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="0 0.13 0.13" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="0.06 0.13 0.13" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="-0.06 0.13 0.13" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="-0.15 0.13 0" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="-0.15 0.13 0.07" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="-0.15 0.13 -0.07" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="0.15 0.13 0" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="0.15 0.13 0.07" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+            <a-box position="0.15 0.13 -0.07" width="0.02" height="0.02" depth="0.02" color="#dec183"></a-box>
+
+            <!-- Конусоподібні дахи на баштах -->
+            <a-cone position="-0.14 0.2 -0.12" radius-bottom="0.032" radius-top="0" height="0.04" color="#c1440e"></a-cone>
+            <a-cone position="0.14 0.2 -0.12" radius-bottom="0.032" radius-top="0" height="0.04" color="#c1440e"></a-cone>
+            <a-cone position="-0.14 0.2 0.12" radius-bottom="0.032" radius-top="0" height="0.04" color="#c1440e"></a-cone>
+            <a-cone position="0.14 0.2 0.12" radius-bottom="0.032" radius-top="0" height="0.04" color="#c1440e"></a-cone>
+
+            <!-- Велика арка-ворота на передній стіні -->
+            <!-- <a-torus position="0 0.000000003 0.000131" radius="0.0000000003" tube="0.000025" arc="360" rotation="0 0 0" color="#bfa77a"></a-torus> -->
+            <!-- <a-circle position="0 0.000000003 0.000131" radius="0.0000000003" arc="180" color="#c1440e"></a-circle> -->
+
+            <!-- Внутрішній двір -->
+            <a-plane position="0 0.02 0" rotation="-90 0 0" width="0.2" height="0.2" color="#bfa77a"></a-plane>
+
+            <!-- Внутрішні будівлі -->
+            <a-box position="0 0.04 0" width="0.08" height="0.06" depth="0.04" material="src: #brick-texture; repeat: 4 2"></a-box>
+            <a-box position="0.06 0.04 0.04" width="0.04" height="0.06" depth="0.04" material="src: #brick-texture; repeat: 2 2"></a-box>
+            <a-box position="-0.06 0.04 0.04" width="0.04" height="0.06" depth="0.04" material="src: #brick-texture; repeat: 2 2"></a-box>
+            <a-box position="0.06 0.04 -0.04" width="0.04" height="0.06" depth="0.04" material="src: #brick-texture; repeat: 2 2"></a-box>
+            <a-box position="-0.06 0.04 -0.04" width="0.04" height="0.06" depth="0.04" material="src: #brick-texture; repeat: 2 2"></a-box>
+
+            <!-- Головна вежа (донжон) -->
+            <a-cylinder position="0 0.13 0" radius="0.04" height="0.18" material="src: #brick-texture; repeat: 8 9"></a-cylinder>
+            <a-box position="0 0.22 0" width="0.08" height="0.02" depth="0.08" color="#f63b23"></a-box>
+            <!-- Зубці на донжоні -->
+            <a-box position="0.04 0.23 0" width="0.01" height="0.02" depth="0.01" color="#bfa77a"></a-box>
+            <a-box position="-0.04 0.23 0" width="0.01" height="0.02" depth="0.01" color="#bfa77a"></a-box>
+            <a-box position="0 0.23 0.04" width="0.01" height="0.02" depth="0.01" color="#bfa77a"></a-box>
+            <a-box position="0 0.23 -0.04" width="0.01" height="0.02" depth="0.01" color="#bfa77a"></a-box>
+            <a-box position="0.04 0.23 0.04" width="0.01" height="0.02" depth="0.01" color="#bfa77a"></a-box>
+            <a-box position="-0.04 0.23 0.04" width="0.01" height="0.02" depth="0.01" color="#bfa77a"></a-box>
+            <a-box position="0.04 0.23 -0.04" width="0.01" height="0.02" depth="0.01" color="#bfa77a"></a-box>
+            <a-box position="-0.04 0.23 -0.04" width="0.01" height="0.02" depth="0.01" color="#bfa77a"></a-box>
+
+            <!-- Флагшток і прапор (на донжоні) -->
+            <a-cylinder position="0 0.255 0" radius="0.0015" height="0.15" color="#8B4513"></a-cylinder>
+            <a-entity id="flag-container" position="0 0.2 0">
+                <a-entity id="flag-entity">
+                    <a-plane id="flag" position="0.02 0.002 0" width="0.04" height="0.015" color="#c1440e" rotation="0 0 0">
+                        <a-text value="Thank You Mario But Our Princess Is in Another Castle" position="0 0 0.001" color="white" align="center" width="0.032" wrap-count="32" scale="1.2 1.2 1.2"></a-text>
+                    </a-plane>
+                </a-entity>
+            </a-entity>
+        </a-entity>
+
+        <!-- Камера -->
+        <a-camera></a-camera>
+    </a-scene>
+
+    <!-- Анімація прапора -->
+    <script>
+        document.querySelector('a-scene').addEventListener('loaded', function () {
+            const flagContainer = document.getElementById('flag-container');
+            const flagEntity = document.getElementById('flag-entity');
+            let currentHeight = 0.285;
+            const maxHeight = 0.315;
+            const raiseSpeed = 0.0005;
+            const flagStartX = 0.02;
+            const flagStartY = 0.002;
+            const flagStartZ = 0;
+            const raiseInterval = setInterval(() => {
+                currentHeight += raiseSpeed;
+                flagContainer.setAttribute('position', `0 ${currentHeight} 0`);
+                if (currentHeight >= maxHeight) {
+                    clearInterval(raiseInterval);
+                    startWavingAnimation();
+                }
+            }, 30);
+
+            function startWavingAnimation() {
+                let time = 0;
+                setInterval(() => {
+                    time += 0.03;
+                    const rotY = Math.sin(time) * 12 + 10;
+                    const rotX = Math.sin(time * 1.2) * 2;
+                    const rotZ = Math.sin(time * 0.7) * 4;
+                    flagEntity.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
+
+                    const posY = flagStartY + Math.sin(time * 1.1) * 0.0007;
+                    const posZ = flagStartZ + Math.cos(time * 0.5) * 0.0009;
+                    flagEntity.children[0].setAttribute('position', `${flagStartX} ${posY} ${posZ}`);
+                }, 20);
+            }
+        });
+    </script>
+</body>
+</html>
