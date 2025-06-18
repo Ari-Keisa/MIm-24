@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+	<meta charset="UTF-8" />
+	<title>Сонячна система</title>
+	<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<script src="js/script.js"></script>
+	<div id="ui">
+	    <label>Швидкість анімації: <span id="speedVal">1.00</span>x
+ 	         <input id="speedSlider" type="range" min="86400" max="31536000" step="10" value="86400">
+  	    </label>
+ 	    <label>Швидкість переміщення камери: <span id="moveSpeedVal">100</span>
+ 	         <input id="moveSpeedSlider" type="range" min="10" max="500" step="10" value="100">
+  	    </label>
+  	    <label>Висота камери (вісь Y): <span id="heightVal">50</span>
+ 	         <input id="heightSlider" type="range" min="10" max="300" step="1" value="50">
+	    </label>
+ 	    <label>Наближення камери: <span id="zoomVal">150</span>
+	         <input id="zoomSlider" type="range" min="50" max="10000" step="0.5" value="150">
+ 	    </label>  
+	</div>
+
+        <a-scene background="color: black">
+ 	    <a-sky src="models/8k_stars_milky_way.jpg"></a-sky>
+  
+ 	    <a-light type="point" intensity="2.5" distance="50000000" position="0 0 0" color="#ffffff"></a-light>
+	      <a-light type="ambient" intensity="0.3"></a-light>
+
+	    <a-entity id="cameraRig" position="0 50 150">
+	      <a-camera wasd-controls="acceleration: 100" look-controls></a-camera>
+	    </a-entity>
+
+    	    <a-sphere id="sun" src="models/8k_sun.jpg" radius="6.96" position="0 0 0"></a-sphere>
+	    <a-sphere
+	      radius="7.5"
+	      position="0 0 0"
+	      material="color: #ffffaa; shader: standard; emissive: #ffff66; emissiveIntensity: 1.5; transparent: true; opacity: 0.4; side: double;">
+	    </a-sphere>
+  
+	    <a-entity id="orbits"></a-entity>
+
+	    <a-entity planet="name: Mercury; dist: 12; T: 88; rotationPeriod: 1407.6">
+   	      <a-sphere  radius="0.24" src="models/8k_mercury.jpg"></a-sphere>
+	    </a-entity>
+
+	    <a-entity planet="name: Venus; dist: 18; T: 225; rotationPeriod: -5832.5">
+   	      <a-sphere  radius="0.60" src="models/8k_venus_surface.jpg"></a-sphere>
+	    </a-entity>
+
+	    <a-entity planet="name: Earth; dist: 24; T: 365.25; rotationPeriod: 24">
+	      <a-sphere radius="0.64" src="models/8k_earth_daymap.jpg"></a-sphere>
+            </a-entity>
+  
+	    <a-entity id="moon" moon>
+	      <a-sphere radius="0.17" src="models/8k_moon.jpg" position="1.5 0 0"></a-sphere>
+	    </a-entity>
+
+	    <a-entity planet="name: Mars; dist: 30; T: 687; rotationPeriod: 24.6">
+	      <a-sphere  radius="0.34" src="models/8k_mars.jpg"></a-sphere>
+	    </a-entity>
+
+	    <a-entity planet="name: Jupiter; dist: 42; T: 4333; rotationPeriod: 9.9">
+	      <a-sphere  radius="5.00" src="models/8k_jupiter.jpg"></a-sphere>
+	    </a-entity>
+
+	    <a-entity planet="name: Saturn; dist: 60; T: 10759; rotationPeriod: 10.7">
+	      <a-sphere radius="4.82" src="models/8k_saturn.jpg"></a-sphere>
+	      <a-ring radius-inner="6" radius-outer="9" position="0 0 0" rotation="90 0 0"
+                src="models/8k_saturn_ring_alpha.png"
+                material="transparent: true; alphaTest: 0.01; side: double; opacity: 1.0">
+	      </a-ring>
+	    </a-entity>
+
+	    <a-entity planet="name: Uranus; dist: 72; T: 30687; rotationPeriod: -17.2">
+	      <a-sphere  radius="2.53" src="models/2k_uranus.jpg"></a-sphere>
+	    </a-entity>
+
+	    <a-entity planet="name: Neptune; dist: 84; T: 60190; rotationPeriod: 16.1">
+	      <a-sphere  radius="2.46" src="models/2k_neptune.jpg"></a-sphere>
+	    </a-entity>
+
+	    <a-entity planet="name: Pluto; dist: 96; T: 90560; rotationPeriod: 153.3">
+	      <a-sphere 
+	        src="models/pluto.jpg"
+	        radius="0.12" 
+	      </a-sphere>
+	    </a-entity>
+
+	    <a-entity id="controller" system-controller></a-entity>
+        </a-scene>
+</body>
+</html>

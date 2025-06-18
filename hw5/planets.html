@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Сонячна система з 3D-моделями</title>
+	<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+	<script src="script/planet.js"></script>
+	<style>
+   	  .planet-info {
+     	    position: absolute;
+     	    bottom: 20px;
+    	    left: 20px;
+    	    background: rgba(0,0,0,0.7);
+    	    color: white;
+    	    padding: 15px;
+    	    border-radius: 10px;
+     	    max-width: 300px;
+    	    font-family: Arial, sans-serif;
+   	    display: none;
+   	  }
+          .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+          }
+          button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin: 5px;
+            cursor: pointer;
+          }
+        </style>
+</head>
+<body>
+	<a-scene background="color: black">
+          <!-- Зірковий фон -->
+          <a-sky src="sky.png"></a-sky>
+    
+          <!-- Освітлення -->
+          <a-light type="point" intensity="1.5" distance="50" decay="2" position="0 1.6 0" color="yellow"></a-light>
+          <a-light type="ambient" intensity="0.3"></a-light>
+      
+          <a-entity id="sun" geometry="primitive: sphere; radius: 2"
+                    material="color: yellow; emissive: orange"
+                    position="0 1.6 0"></a-entity>
+          <a-entity gltf-model="#sunModel" position="0 1.6 0" scale="2 2 2"></a-entity>
+      
+          <a-entity id="planets">
+       
+            <a-entity id="mercury-orbit" rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
+              <a-sphere radius="0.1" color="gray"
+                        position="3 1.6 0"></a-sphere>
+            </a-entity>
+       
+            <a-entity id="venus-orbit" rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 15000">
+              <a-sphere radius="0.2" color="khaki"
+                        position="4.5 1.6 0"></a-sphere>
+            </a-entity>
+
+            <a-entity id="earth-orbit" rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 20000">
+              <a-sphere radius="0.2" color="blue"
+                       position="6 1.6 0"></a-sphere>
+            </a-entity>
+        
+            <a-entity id="mars-orbit" rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 25000">
+              <a-sphere radius="0.15" color="red"
+                        position="7.5 1.6 0"></a-sphere>
+            </a-entity>
+        
+            <a-entity id="jupiter-orbit" rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 40000">
+              <a-sphere radius="0.6" color="#d2b48c"
+                        position="10 1.6 0"></a-sphere>
+            </a-entity>
+        
+            <a-entity id="saturn-orbit" rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 50000">
+              <a-sphere radius="0.5" color="#deb887"
+                        position="13 1.6 0"></a-sphere>
+            </a-entity>
+        
+            <a-entity id="uranus-orbit" rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 60000">
+              <a-sphere radius="0.4" color="#87ceeb"
+                        position="16 1.6 0"></a-sphere>
+            </a-entity>
+        
+            <a-entity id="neptune-orbit" rotation="0 0 0"
+                      animation="property: rotation; to: 0 360 0; loop: true; dur: 70000">
+              <a-sphere radius="0.4" color="#4169e1"
+                        position="19 1.6 0"></a-sphere>
+            </a-entity>
+
+          </a-entity>
+      
+          <a-entity camera look-controls position="0 10 15"></a-entity>
+        </a-scene>
+      </body>
+</html>
