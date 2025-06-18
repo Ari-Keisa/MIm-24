@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+</head>
+<body>
+<script>
+        let markerVisible = { A: false, B: false, C: false, D: false, F: false, G: false, H: false };
+        AFRAME.registerComponent('registerevents', {
+                init: function () {
+                        let marker = this.el;
+                        marker.addEventListener('markerFound', function() {
+                                markerVisible[ marker.id ] = true;
+                                console.log(marker.id, " видно");
+                        });
+                        marker.addEventListener('markerLost', function() {
+                                markerVisible[ marker.id ] = false;
+                                console.log(marker.id, " втрачено");
+                        });
+                }
+        });
+
+        let points = ['A','B','C','D','F','G','H'];
+        let coord = {};
+        points.forEach(p => coord[p] = new THREE.Vector3());
+
+        AFRAME.registerComponent('run', {
+                init: function () {
+                        // Точки
+                        this.objs = {};
+                        points.forEach(p => {
+                                let obj = document.getElementById(p);
+                                if (obj) this.objs[p] = obj.object3D;
+                        });
+        
+                        // Лінії між усіма парами
+                        this.lines = {};
+                        let geometry = new THREE.CylinderGeometry(0.02, 0.02, 1, 12);
+                        geometry.applyMatrix4( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
+                        geometry.applyMatrix4( new THREE.Matrix4().makeRotationX( THREE.MathUtils.degToRad( 90 ) ) );
+                        for (let i=0; i<points.length; ++i) {
+                                for (let j=i+1; j<points.length; ++j) {
+                                        let id1 = points[i], id2 = points[j];
+                                        let eid = id1+id2;
+                                        let entity = document.getElementById(eid);
+                                        if (entity) {
+                                                let mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color:0x888888}));
+                                                entity.object3D.add(mesh);
+                                                mesh.visible = false;
+                                                this.lines[eid] = {mesh, id1, id2, entity};
+                                        }
+                                }
+                        }
+                        this.text = document.getElementById("PS");
+                },
+
+                tick: function () {
+                        // Оновлення координат
+                        points.forEach(p => {
+                                let obj = document.getElementById(p);
+                                if (obj && obj.object3D) obj.object3D.getWorldPosition(coord[p]);
+                        });
+
+                        // Оновлення ліній
+                        for (let key in this.lines) {
+                                let {mesh, id1, id2, entity} = this.lines[key];
+                                if (markerVisible[id1] && markerVisible[id2]) {
+                                        let d = coord[id1].distanceTo(coord[id2]);
+                                        entity.object3D.lookAt(coord[id2]);
+                                        mesh.scale.set(1,1,d);
+                                        mesh.visible = true;
+                                } else {
+                                        mesh.visible = false;
+                                }
+                        }
+
+                        // Периметр чотирикутника ABCD і площі трикутників
+                        if(markerVisible["A"] && markerVisible["B"] && markerVisible["C"] && markerVisible["D"]) {
+                                let dAB = coord['A'].distanceTo(coord['B']);
+                                let dBC = coord['B'].distanceTo(coord['C']);
+                                let dCD = coord['C'].distanceTo(coord['D']);
+                                let dDA = coord['D'].distanceTo(coord['A']);
+                                let perim = dAB + dBC + dCD + dDA;
+
+                                function area(a, b, c) {
+                                        let ab = coord[a].distanceTo(coord[b]);
+                                        let bc = coord[b].distanceTo(coord[c]);
+                                        let ca = coord[c].distanceTo(coord[a]);
+                                        let p = (ab + bc + ca) / 2;
+                                        return Math.sqrt(Math.max(0, p * (p-ab) * (p-bc) * (p-ca)));
+                                }
+                                let S_ABC = area('A','B','C');
+                                let S_ABD = area('A','B','D');
+                                let S_ACD = area('A','C','D');
+                                let S_BCD = area('B','C','D');
+
+                                this.text.setAttribute("value",
+                                        `P(ABCD)=${perim.toFixed(2)}\nS(ABC)=${S_ABC.toFixed(2)}\nS(ABD)=${S_ABD.toFixed(2)}\nS(ACD)=${S_ACD.toFixed(2)}\nS(BCD)=${S_BCD.toFixed(2)}`
+                                );
+                        } else {
+                                this.text.setAttribute("value", "");
+                        }
+                  }
+        });
+</script>
+
+<a-scene vr-mode-ui="enabled: false;"
+        renderer="logarithmicDepthBuffer: true;"
+        embedded
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false; debug: false;">
+
+        <!-- Маркер A -->
+        <a-marker type="pattern" url="A.patt" id="A" registerevents>
+                <a-sphere color="red" radius="0.10"></a-sphere>
+                <a-entity id="AB"></a-entity>
+                <a-entity id="AC"></a-entity>
+                <a-entity id="AD"></a-entity>
+                <a-entity id="AF"></a-entity>
+                <a-entity id="AG"></a-entity>
+                <a-entity id="AH"></a-entity>
+                <a-text id="PS" color="yellow" value="" position="0 0.3 0" rotation="-90 0 0"></a-text>
+        </a-marker>
+
+        <!-- Маркер B -->
+        <a-marker type="pattern" url="B.patt" id="B" registerevents>
+                <a-sphere color="green" radius="0.10"></a-sphere>
+                <a-entity id="BC"></a-entity>
+                <a-entity id="BD"></a-entity>
+                <a-entity id="BF"></a-entity>
+                <a-entity id="BG"></a-entity>
+                <a-entity id="BH"></a-entity>
+        </a-marker>
+
+        <!-- Маркер C -->
+        <a-marker type="pattern" url="C.patt" id="C" registerevents>
+                <a-sphere color="blue" radius="0.10"></a-sphere>
+                <a-entity id="CD"></a-entity>
+                <a-entity id="CF"></a-entity>
+                <a-entity id="CG"></a-entity>
+                <a-entity id="CH"></a-entity>
+        </a-marker>
+
+        <!-- Маркер D -->
+        <a-marker type="pattern" url="D.patt" id="D" registerevents>
+                <a-sphere color="yellow" radius="0.10"></a-sphere>
+                <a-entity id="DF"></a-entity>
+                <a-entity id="DG"></a-entity>
+                <a-entity id="DH"></a-entity>
+        </a-marker>
+
+        <!-- Маркер F -->
+        <a-marker type="pattern" url="F.patt" id="F" registerevents>
+                <a-sphere color="cyan" radius="0.10"></a-sphere>
+                <a-entity id="FG"></a-entity>
+                <a-entity id="FH"></a-entity>
+        </a-marker>
+
+        <!-- Маркер G -->
+        <a-marker type="pattern" url="G.patt" id="G" registerevents>
+                <a-sphere color="magenta" radius="0.10"></a-sphere>
+                <a-entity id="GH"></a-entity>
+        </a-marker>
+
+        <!-- Маркер H -->
+        <a-marker type="pattern" url="H.patt" id="H" registerevents>
+                <a-sphere color="orange" radius="0.10"></a-sphere>
+        </a-marker>
+
+        <a-entity camera></a-entity>
+        <a-entity run></a-entity>
+</a-scene>
+</body>
+</html>
