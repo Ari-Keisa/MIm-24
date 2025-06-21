@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>Handpose: Кути між пальцями (MediaPipe)</title>
+        <!-- 
+             MediaPipe Hands значно потужніша версія моделі handpose.
+             Це його більш точний дитя, якщо можна так сказать. Короч, це і є handpose, який треба використати
+             для завдання, але більше оптимізована й точна. Вона одразу вміє визначати праву/ліву руку..
+             та з пов'язанням з іншими бібліотеками возні менше
+         -->
+        <meta charset="UTF-8">
+    
+        <style>
+                html, body {
+                        margin: 0;
+                        padding: 0;
+                        width: 100%;
+                        height: 100%;
+                        overflow: hidden;
+                        font-family: sans-serif;
+                }
+                #video-container {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                }
+                #output-canvas {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                }
+                #controls {
+                        position: absolute;
+                        top: 10px;
+                        left: 10px;
+                        z-index: 10;
+                }
+                #results {
+                        background: rgba(0,0,0,0.7);
+                        color: white;
+                        padding: 10px;
+                        border-radius: 8px;
+                        margin-top: 10px;
+                }
+                button {
+                        padding: 8px 12px;
+                        border-radius: 8px;
+                        border: 1px solid #ccc;
+                        background-color: #f0f0f0;
+                        cursor: pointer;
+                }
+        </style>
+</head>
+<body>
+        <div id="video-container">
+                <video id="input-video" style="display: none;"></video>
+                <canvas id="output-canvas"></canvas>
+        </div>
+
+        <div id="controls">
+                <button id="skeleton-toggle-btn">Сховати скелет</button>
+                <div id="results">Наведіть руку на камеру</div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+        <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                        const videoElement = document.getElementById('input-video');
+                        const canvasElement = document.getElementById('output-canvas');
+                        const canvasCtx = canvasElement.getContext('2d');
+                        const resultsDiv = document.getElementById('results');
+                        const skeletonBtn = document.getElementById('skeleton-toggle-btn');
+
+                        let showSkeleton = true;
+                        let smoothedAngles = null; // Зберігаємо згладжені кути
+                        const SMOOTHING_FACTOR = 0.3; // Коефіцієнт згладжування (0.1 - сильне, 0.9 - слабке)
+
+                        skeletonBtn.addEventListener('click', () => {
+                                showSkeleton = !showSkeleton;
+                                skeletonBtn.textContent = showSkeleton ? 'Сховати скелет' : 'Показати скелет';
+                        });
+
+                        function onResults(results) {
+                                const width = canvasElement.width;
+                                const height = canvasElement.height;
+
+                                canvasCtx.save();
+                                canvasCtx.clearRect(0, 0, width, height);
+                                canvasCtx.drawImage(results.image, 0, 0, width, height);
+
+                                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                                        const landmarks = results.multiHandLandmarks[0];
+                                        const handedness = results.multiHandedness[0].label; // 'Left' або 'Right'
+
+                                if (showSkeleton) {
+                                        window.drawConnectors(canvasCtx, landmarks, window.HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+                                        window.drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
+                                }
+
+                        // --- Обчислюємо кути ---
+                        // Вектори створюємо від "основи" пальця (MCP) до його кінчика (TIP) у 3D
+                        const fingerVectors = {
+                                Thumb:  { x: landmarks[4].x - landmarks[2].x, y: landmarks[4].y - landmarks[2].y, z: landmarks[4].z - landmarks[2].z },
+                                Index:  { x: landmarks[8].x - landmarks[5].x, y: landmarks[8].y - landmarks[5].y, z: landmarks[8].z - landmarks[5].z },
+                                Middle: { x: landmarks[12].x - landmarks[9].x, y: landmarks[12].y - landmarks[9].y, z: landmarks[12].z - landmarks[9].z },
+                                Ring:   { x: landmarks[16].x - landmarks[13].x, y: landmarks[16].y - landmarks[13].y, z: landmarks[16].z - landmarks[13].z },
+                                Pinky:  { x: landmarks[20].x - landmarks[17].x, y: landmarks[20].y - landmarks[17].y, z: landmarks[20].z - landmarks[17].z }
+                        };
+
+                        const dot = (v1, v2) => v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+                        const mag = (v) => Math.sqrt(v.x**2 + v.y**2 + v.z**2);
+                        const angle = (v1, v2) => {
+                                const m = mag(v1) * mag(v2);
+                                if (m === 0) return 0; // Захист від ділення на нуль
+                                        const val = Math.max(-1.0, Math.min(1.0, dot(v1, v2) / m)); // Захист від помилок з рухомою комою
+                                        return Math.acos(val) * 180 / Math.PI;
+                                };
+
+                        const currentAngles = {
+                                'Великий-Вказівний': angle(fingerVectors.Thumb, fingerVectors.Index),
+                                'Вказівний-Середній': angle(fingerVectors.Index, fingerVectors.Middle),
+                                'Середній-Безіменний': angle(fingerVectors.Middle, fingerVectors.Ring),
+                                'Безіменний-Мізинець': angle(fingerVectors.Ring, fingerVectors.Pinky)
+                        };
+
+                        // --- Застосовуємо згладжування ---
+                        if (!smoothedAngles) {
+                                // Перший кадр, просто ініціалізуємо
+                                smoothedAngles = currentAngles;
+                        } else {
+                                // Застосовуємо Exponential Moving Average
+                                for (const key in currentAngles) {
+                                        smoothedAngles[key] = SMOOTHING_FACTOR * currentAngles[key] + (1 - SMOOTHING_FACTOR) * smoothedAngles[key];
+                                }
+                        }
+
+                        resultsDiv.innerHTML = `
+                                <strong>Рука: ${handedness === 'Left' ? 'Ліва' : 'Права'}</strong><br>
+                                ${Object.entries(smoothedAngles).map(([name, val]) => `${name}: ${val.toFixed(1)}°`).join('<br>')}
+                        `;
+
+                        } else {
+                                resultsDiv.innerHTML = 'Наведіть руку на камеру';
+                                        smoothedAngles = null; // Скидаємо, якщо рука зникла
+                                }
+                                canvasCtx.restore();
+                        }
+
+                        const hands = new window.Hands({
+                                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+                        });
+
+                        hands.setOptions({
+                                maxNumHands: 1,
+                                modelComplexity: 1,
+                                minDetectionConfidence: 0.5,
+                                minTrackingConfidence: 0.5,
+                                selfieMode: true, // ВАЖЛИВО: для дзеркального відображення
+                        });
+
+                        hands.onResults(onResults);
+
+                        async function startCamera() {
+                                const stream = await navigator.mediaDevices.getUserMedia({
+                                        video: { width: { ideal: 1280 }, height: { ideal: 720 } }
+                                });
+                                videoElement.srcObject = stream;
+
+                                videoElement.onloadedmetadata = () => {
+                                        videoElement.play();
+                                        // Встановлюємо розмір canvas відповідно до відео, щоб уникнути розтягування
+                                        canvasElement.width = videoElement.videoWidth;
+                                        canvasElement.height = videoElement.videoHeight;
+                                        sendToMediaPipe();
+                                };
+                        }
+
+                        async function sendToMediaPipe() {
+                                if (videoElement.readyState >= 2) { // Чи є дані для відправки
+                                        await hands.send({ image: videoElement });
+                                }
+                                requestAnimationFrame(sendToMediaPipe);
+                        }
+
+                        startCamera();
+                });
+        </script>
+</body>
+</html>
