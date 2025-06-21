@@ -4,8 +4,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Домашня робота 9 (AR)</title>
         <!-- Підключаємо стабільні версії бібліотек -->
-        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.0/dist/mindar-image-aframe.prod.js"></script>
+        <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
         <style>
                 #ar-container {
                         position: absolute;
@@ -44,12 +44,13 @@
                 </a-entity>
 
                 <!-- Маркер 1: Модель Птиці -->
-                <a-entity mindar-image-target="targetIndex: 1">
+                <a-entity mindar-image-target="targetIndex: 1" id="bird-target">
                         <a-gltf-model
                                 rotation="0 0 0"
                                 position="0 0.1 0"
                                 scale="0.0009 0.0009 0.0009" 
                                 src="#birdModel"
+                                animation-mixer="clip: Take 001"
                         ></a-gltf-model>
                 </a-entity>
         </a-scene>
