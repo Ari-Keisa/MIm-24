@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Лабораторна робота 3 - Замок в WebXR (v2)</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { ARButton } from 'three/addons/webxr/ARButton.js';
+
+        let camera, scene, renderer;
+        let controller;
+        let reticle;
+        let hitTestSource = null;
+        let hitTestSourceRequested = false;
+
+        // Масив для зберігання об'єктів, які треба анімувати
+        const objectsToAnimate = [];
+
+        init();
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.xr.enabled = true;
+            document.body.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            directionalLight.position.set(2, 5, 3);
+            scene.add(directionalLight);
+            
+            const arButton = ARButton.createButton(renderer, {
+                requiredFeatures: ['hit-test']
+            });
+            arButton.style.bottom = '20px';
+            arButton.style.right = 'calc(50% - 75px)';
+            arButton.style.width = '150px';
+            document.body.appendChild(arButton);
+            
+            controller = renderer.xr.getController(0);
+            controller.addEventListener('select', onSelect);
+            scene.add(controller);
+
+            reticle = new THREE.Mesh(
+                new THREE.RingGeometry(0.1, 0.15, 32).rotateX(-Math.PI / 2),
+                new THREE.MeshBasicMaterial()
+            );
+            reticle.matrixAutoUpdate = false;
+            reticle.visible = false;
+            scene.add(reticle);
+
+            window.addEventListener('resize', onWindowResize, false);
+            renderer.setAnimationLoop(animate);
+        }
+
+        function onSelect() {
+            if (reticle.visible) {
+                const castle = createCastle();
+                castle.position.setFromMatrixPosition(reticle.matrix);
+                // Зменшуємо масштаб замку
+                castle.scale.set(0.03, 0.03, 0.03);
+                scene.add(castle);
+                // Додаємо замок до списку для анімації
+                objectsToAnimate.push(castle);
+            }
+        }
+        
+        function createCastle() {
+            const castleGroup = new THREE.Group();
+            
+            const textureLoader = new THREE.TextureLoader();
+            const brickTexture = textureLoader.load('https://raw.githubusercontent.com/aframevr/sample-assets/refs/heads/master/assets/images/bricks/brick_roughness.jpg');
+            brickTexture.wrapS = THREE.RepeatWrapping;
+            brickTexture.wrapT = THREE.RepeatWrapping;
+            
+            const brickMaterial = new THREE.MeshStandardMaterial({ map: brickTexture, roughness: 0.8, metalness: 0.2 });
+            const merlonMaterial = new THREE.MeshStandardMaterial({ color: 0xdec183, roughness: 0.7 });
+            const roofMaterial = new THREE.MeshStandardMaterial({ color: 0xc1440e });
+            const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x6ad16a });
+            const courtyardMaterial = new THREE.MeshStandardMaterial({ color: 0x8b7d5a });
+            const gateFrameMaterial = new THREE.MeshStandardMaterial({ color: 0xbfa77a });
+            const flagpoleMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513, metalness: 0.8 });
+
+            function addCastlePart(geometry, material, position) {
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(position.x, position.y, position.z);
+                castleGroup.add(mesh);
+            }
+            
+            addCastlePart(new THREE.CylinderGeometry(30, 30, 4, 32), groundMaterial, {x: 0, y: 2, z: 0});
+            
+            const wallBackMat = brickMaterial.clone(); wallBackMat.map.repeat.set(14, 5);
+            addCastlePart(new THREE.BoxGeometry(28, 10, 2), wallBackMat, {x: 0, y: 7, z: -12});
+            const wallFrontMat = brickMaterial.clone(); wallFrontMat.map.repeat.set(14, 5);
+            addCastlePart(new THREE.BoxGeometry(28, 10, 2), wallFrontMat, {x: 0, y: 7, z: 12});
+            const wallLeftMat = brickMaterial.clone(); wallLeftMat.map.repeat.set(12, 5);
+            addCastlePart(new THREE.BoxGeometry(2, 10, 24), wallLeftMat, {x: -14, y: 7, z: 0});
+            const wallRightMat = brickMaterial.clone(); wallRightMat.map.repeat.set(12, 5);
+            addCastlePart(new THREE.BoxGeometry(2, 10, 24), wallRightMat, {x: 14, y: 7, z: 0});
+
+            [[ -14, -12 ], [ 14, -12 ], [ -14, 12 ], [ 14, 12 ]].forEach(([x, z]) => {
+                const towerMat = brickMaterial.clone(); towerMat.map.repeat.set(6, 8);
+                addCastlePart(new THREE.CylinderGeometry(3, 3, 16, 32), towerMat, {x, y: 10, z});
+                addCastlePart(new THREE.ConeGeometry(3.2, 4, 32), roofMaterial, {x, y: 20, z});
+            });
+            
+            const merlonGeom = new THREE.BoxGeometry(2, 2, 2);
+            [
+                {x: 0, z: -13}, {x: 6, z: -13}, {x: -6, z: -13}, {x: 0, z: 13}, {x: 6, z: 13}, {x: -6, z: 13},
+                {x: -15, z: 0}, {x: -15, z: 7}, {x: -15, z: -7}, {x: 15, z: 0}, {x: 15, z: 7}, {x: 15, z: -7}
+            ].forEach(p => addCastlePart(merlonGeom, merlonMaterial, {x:p.x, y:13, z:p.z}));
+
+            const archTorus = new THREE.Mesh(new THREE.TorusGeometry(7, 0.25, 16, 100, Math.PI), gateFrameMaterial);
+            archTorus.position.set(0, 4, 13.1); castleGroup.add(archTorus);
+            const archCircle = new THREE.Mesh(new THREE.CircleGeometry(7, 32, 0, Math.PI), roofMaterial);
+            archCircle.position.set(0, 4, 13.05); castleGroup.add(archCircle);
+            
+            const courtyard = new THREE.Mesh(new THREE.PlaneGeometry(27.8, 23.8), courtyardMaterial);
+            courtyard.rotation.x = -Math.PI / 2; courtyard.position.y = 4.1; castleGroup.add(courtyard);
+            
+            const centerBuildingMat = brickMaterial.clone(); centerBuildingMat.map.repeat.set(4, 2);
+            addCastlePart(new THREE.BoxGeometry(8, 6, 4), centerBuildingMat, {x: 0, y: 7, z: 0});
+            [[6, 4], [-6, 4], [6, -4], [-6, -4]].forEach(([x, z]) => {
+                const sideMat = brickMaterial.clone(); sideMat.map.repeat.set(2, 2);
+                addCastlePart(new THREE.BoxGeometry(4, 6, 4), sideMat, {x, y: 7, z});
+            });
+
+            const donjonMat = brickMaterial.clone(); donjonMat.map.repeat.set(8, 9);
+            addCastlePart(new THREE.CylinderGeometry(4, 4, 18, 32), donjonMat, {x: 0, y: 13, z: 0});
+            addCastlePart(new THREE.BoxGeometry(8, 2, 8), roofMaterial, {x: 0, y: 22, z: 0});
+            const donjonMerlonGeom = new THREE.BoxGeometry(1, 2, 1);
+            [
+                {x: 4, z: 0}, {x: -4, z: 0}, {x: 0, z: 4}, {x: 0, z: -4},
+                {x: 3.5, z: 3.5}, {x: -3.5, z: 3.5}, {x: 3.5, z: -3.5}, {x: -3.5, z: -3.5}
+            ].forEach(p => addCastlePart(donjonMerlonGeom, merlonMaterial, {x: p.x, y: 24, z: p.z}));
+            
+            addCastlePart(new THREE.CylinderGeometry(0.15, 0.15, 15, 32), flagpoleMaterial, {x: 0, y: 25.5, z: 0});
+            
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 512; canvas.height = 192;
+            context.fillStyle = '#be2309'; context.fillRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = 'white'; context.font = 'bold 26px Arial';
+            context.textAlign = 'center'; context.textBaseline = 'middle';
+            const text = "Thank You Mario But Our Princess Is in Another Castle";
+            const words = text.split(' ');
+            let line = ''; let y = 40; const lineHeight = 30; const x = canvas.width / 2;
+            for(let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = context.measureText(testLine);
+                if (metrics.width > canvas.width - 20 && n > 0) {
+                    context.fillText(line, x, y); line = words[n] + ' '; y += lineHeight;
+                } else { line = testLine; }
+            }
+            context.fillText(line, x, y);
+            
+            const flagMesh = new THREE.Mesh(
+                new THREE.PlaneGeometry(4, 1.5), 
+                new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(canvas), side: THREE.DoubleSide })
+            );
+            const flagEntity = new THREE.Group();
+            flagEntity.add(flagMesh);
+            flagMesh.position.x = 2;
+            
+            const flagContainer = new THREE.Group();
+            flagContainer.add(flagEntity);
+            castleGroup.add(flagContainer);
+            
+            // Зберігаємо дані для анімації в самому об'єкті замку
+            castleGroup.userData.animationData = {
+                flagContainer, flagEntity, flagMesh,
+                raising: true, time: 0, currentHeight: 28.5,
+                maxHeight: 31.5, raiseSpeed: 0.01
+            };
+
+            return castleGroup;
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate(timestamp, frame) {
+            if (frame) {
+                const referenceSpace = renderer.xr.getReferenceSpace();
+                const session = renderer.xr.getSession();
+
+                if (hitTestSourceRequested === false) {
+                    session.requestReferenceSpace('viewer').then(referenceSpace => {
+                        session.requestHitTestSource({ space: referenceSpace }).then(source => {
+                            hitTestSource = source;
+                        });
+                    });
+                    session.addEventListener('end', () => {
+                        hitTestSourceRequested = false; hitTestSource = null;
+                    });
+                    hitTestSourceRequested = true;
+                }
+
+                if (hitTestSource) {
+                    const hitTestResults = frame.getHitTestResults(hitTestSource);
+                    if (hitTestResults.length > 0) {
+                        const hit = hitTestResults[0];
+                        reticle.visible = true;
+                        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
+                    } else {
+                        reticle.visible = false;
+                    }
+                }
+            }
+            
+            // Цикл анімації для кожного замку
+            objectsToAnimate.forEach(castle => {
+                const anim = castle.userData.animationData;
+                if (anim.raising) {
+                    anim.currentHeight += anim.raiseSpeed;
+                    anim.flagContainer.position.y = anim.currentHeight;
+                    if (anim.currentHeight >= anim.maxHeight) {
+                        anim.raising = false;
+                    }
+                } else {
+                    anim.time += 0.03;
+                    anim.flagEntity.rotation.y = THREE.MathUtils.degToRad(Math.sin(anim.time) * 12 + 10);
+                    anim.flagEntity.rotation.x = THREE.MathUtils.degToRad(Math.sin(anim.time * 1.2) * 2);
+                    anim.flagEntity.rotation.z = THREE.MathUtils.degToRad(Math.sin(anim.time * 0.7) * 4);
+                    anim.flagMesh.position.y = Math.sin(anim.time * 1.1) * 0.07;
+                    anim.flagMesh.position.z = Math.cos(anim.time * 0.5) * 0.09;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>
