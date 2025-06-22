@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Маска Луки із мультика "Леді Баг та Супер Кіт"</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        #toggleButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            z-index: 100;
+            background-color: #1ac74d; /* Ваш колір */
+            color: white; /* Колір тексту */
+            border: none; /* Прибираємо рамку */
+            border-radius: 5px; /* Закруглюємо кути */
+            cursor: pointer; /* Змінюємо курсор при наведенні */
+            font-family: sans-serif;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <button id="toggleButton">Показати скелет</button>
+    </div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "mindar-face-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-three.prod.js"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { MindARThree } from 'mindar-face-three';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const start = async() => {
+                const mindarThree = new MindARThree({
+                    container: document.querySelector("#container"),
+                });
+                const { renderer, scene, camera } = mindarThree;
+
+                const light = new THREE.AmbientLight( 0xffffff );
+                scene.add(light);
+                
+                // 1. Створюємо матеріали для обох станів
+                const texture = new THREE.TextureLoader().load("./sans.png");
+                const faceMaskMaterial = new THREE.MeshBasicMaterial({map: texture, transparent: true});
+                const wireframeMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true});
+                
+                // 2. Створюємо ОДНУ модель обличчя
+                const faceMesh = mindarThree.addFaceMesh();
+                faceMesh.material = faceMaskMaterial; // Починаємо з маски
+
+                // Налаштування позиції та масштабу маски
+                faceMesh.scale.set(0.9, 1.0, 1.0); // Робимо вужчою і зберігаємо висоту
+                faceMesh.position.set(0, 0.1, 0);  // Піднімаємо трохи вгору
+
+                scene.add(faceMesh);
+
+                // 3. Логіка кнопки
+                const button = document.getElementById('toggleButton');
+                let isMaskVisible = true;
+                button.addEventListener('click', () => {
+                    isMaskVisible = !isMaskVisible;
+                    if (isMaskVisible) {
+                        faceMesh.material = faceMaskMaterial;
+                        button.textContent = 'Показати скелет';
+                    } else {
+                        faceMesh.material = wireframeMaterial;
+                        button.textContent = 'Показати маску';
+                    }
+                });
+
+                // --- Старт ---
+                await mindarThree.start();
+                renderer.setAnimationLoop(() => {
+                    renderer.render(scene, camera);
+                });
+            }
+            start();
+        });
+    </script>
+</body>
+</html>
